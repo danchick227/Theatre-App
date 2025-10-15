@@ -1,0 +1,58 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--header-height); /* ← применили переменную */
+  background: rgb(11, 11, 32);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+}
+
+/* Контейнер */
+.header-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 150px;
+}
+
+/* Лого */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  height: 6em;
+  padding: 1.5em;
+}
+
+.logo img {
+  height: 70%; /* ← логотип теперь подстраивается под высоту шапки */
+  width: auto;
+}
+
+.logo span {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Кнопка */
+.login-btn {
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #a1a1a1;
+  transform: scale(1.1);
+}

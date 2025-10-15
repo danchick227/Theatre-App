@@ -11,8 +11,6 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  --header-height: 75px;
 }
 
 a {
@@ -21,7 +19,7 @@ a {
   text-decoration: inherit;
 }
 a:hover {
-  color: #747bff;
+  color: #535bf2;
 }
 
 body {
@@ -44,7 +42,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #f9f9f9;
+  background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -54,3 +52,4 @@ button:hover {
 button:focus {
   outline: none;
 }
+
