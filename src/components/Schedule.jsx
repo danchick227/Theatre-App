@@ -42,7 +42,7 @@ export default function Schedule() {
         color: "#d9c5f7",
       },
     ],
-    "Арт-клуб": [
+    хз: [
       { title: "Реп. Муха - Цокотуха", time: "15:00–18:00", color: "#b9ebe0" },
       {
         title: "Спящая царевна. Тех. репетиция",
@@ -50,7 +50,7 @@ export default function Schedule() {
         color: "#9fe2b8",
       },
     ],
-    "Третья сцена": [
+    "Средняя-сцена": [
       {
         title: "Урок: Театральная студия 'Тяпа'",
         time: "16:30–18:00",

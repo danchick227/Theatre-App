@@ -1,3 +1,4 @@
+/* ===== Основная область расписания ===== */
 .shedule {
   position: absolute;
   top: var(--header-height);
@@ -85,34 +86,7 @@
   text-transform: uppercase;
 }
 
-.scene-table td {
-  background-color: #fff;
-}
-
-.scene-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #fff;
-  font-family: system-ui, sans-serif;
-  font-size: 14px;
-  color: #000;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
-
-.scene-table th,
-.scene-table td {
-  border: 1px solid #ccc;
-  padding: 10px 12px;
-  text-align: center;
-}
-
-.scene-table th {
-  background-color: #f3f3f3;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-/* ===== Расписание карточками ===== */
+/* ===== Карточки событий ===== */
 .day-schedule {
   display: flex;
   flex-wrap: wrap;
@@ -122,6 +96,7 @@
 }
 
 .event {
+  position: relative;
   flex: 0 1 220px;
   min-height: 60px;
 
@@ -129,8 +104,10 @@
   flex-direction: column;
   justify-content: space-between;
 
-  padding: 8px 10px;
-  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+
+  border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   color: #000;
   cursor: default;
@@ -154,13 +131,18 @@
   margin-top: 4px;
 }
 
-/* === Админ-панель === */
+/* ===== Админ-панель ===== */
 .admin-panel {
   margin: 20px 0;
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
   align-items: center;
+
+  background: #fff;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .admin-panel input,
@@ -169,6 +151,13 @@
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 6px;
+}
+
+.admin-panel input[type="color"] {
+  width: 40px;
+  height: 36px;
+  padding: 0;
+  border: none;
 }
 
 .admin-panel button {
@@ -185,22 +174,35 @@
   background-color: var(--accent-2, #222);
 }
 
-/* === Кнопка удаления === */
+/* ===== Кнопка удаления события ===== */
 .delete-btn {
   position: absolute;
   top: 4px;
   right: 6px;
   border: none;
   background: transparent;
-  color: #333;
+  color: #000;
   font-size: 16px;
   cursor: pointer;
-  opacity: 0.6;
+  opacity: 0.4;
+  transition: opacity 0.2s, transform 0.1s;
 }
 
-.event {
-  position: relative;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 8px;
+.delete-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* ===== Отдельное оформление админ-режима ===== */
+.shedule.admin {
+  background-color: #f4f6ff;
+}
+
+.shedule.admin .scene-table {
+  border: 2px solid #ccd4ff;
+}
+
+.admin .event:hover {
+  outline: 2px dashed #888;
+  outline-offset: 2px;
 }
