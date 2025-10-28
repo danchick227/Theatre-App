@@ -3,28 +3,45 @@ import Header from "./components/Header.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import Schedule from "./components/Schedule.jsx";
 import AdminSchedule from "./components/AdminSchedule.jsx";
-import Users from "./components/Users.jsx";
+import Artists from "./components/Users/Artists.jsx";
+import LoginModal from "./components/LoginModal.jsx"; // ← добавили
 import "./App.css";
 
 export default function App() {
   const [activePage, setActivePage] = useState("schedule");
-  const [isAdmin, setIsAdmin] = useState(false); // ← важно
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false); // ← добавили
+
+  const handleLoginSuccess = () => {
+    setIsAdmin(true);
+    setIsLoginOpen(false);
+  };
 
   return (
     <div className="app">
-      {/* передаём в Header состояние администратора */}
-      <Header isAdmin={isAdmin} setIsAdmin={setIsAdmin} />
+      <Header
+        isAdmin={isAdmin}
+        setIsAdmin={setIsAdmin}
+        onOpenLogin={() => setIsLoginOpen(true)} // ← передаём коллбэк
+      />
 
       <div className="layout">
         <Sidebar setActivePage={setActivePage} />
 
         <main className="content">
-          {/* если админ включён, показываем AdminSchedule */}
           {activePage === "schedule" &&
             (isAdmin ? <AdminSchedule /> : <Schedule />)}
-          {activePage === "users" && <Users />}
+          {activePage === "artists" && <Artists />}
         </main>
       </div>
+
+      {/* Модальное окно теперь рендерится поверх всего */}
+      {isLoginOpen && (
+        <LoginModal
+          onClose={() => setIsLoginOpen(false)}
+          onSuccess={handleLoginSuccess}
+        />
+      )}
     </div>
   );
 }

@@ -1,16 +1,7 @@
-import { useState } from "react";
-import LoginModal from "./LoginModal.jsx";
 import "./Header.css";
 import whiteLogo from "../assets/whiteLogo.png";
 
-export default function Header({ isAdmin, setIsAdmin }) {
-  const [open, setOpen] = useState(false);
-
-  const handleLoginSuccess = () => {
-    setIsAdmin(true);
-    setOpen(false);
-  };
-
+export default function Header({ isAdmin, setIsAdmin, onOpenLogin }) {
   return (
     <header className="header">
       <div className="header-container">
@@ -21,7 +12,7 @@ export default function Header({ isAdmin, setIsAdmin }) {
 
         <div className="header-actions">
           {!isAdmin ? (
-            <button className="login-btn" onClick={() => setOpen(true)}>
+            <button className="login-btn" onClick={onOpenLogin}>
               Войти как админ
             </button>
           ) : (
@@ -31,13 +22,6 @@ export default function Header({ isAdmin, setIsAdmin }) {
           )}
         </div>
       </div>
-
-      {open && (
-        <LoginModal
-          onClose={() => setOpen(false)}
-          onSuccess={handleLoginSuccess}
-        />
-      )}
     </header>
   );
 }

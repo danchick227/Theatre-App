@@ -10,6 +10,7 @@
   display: flex;
   flex-direction: column;
   z-index: 1200;
+  font-family: system-ui, sans-serif;
 }
 
 /* ===== ОСНОВНЫЕ КНОПКИ ===== */
@@ -18,16 +19,14 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-
   background: none;
   color: #333;
   font-size: 15px;
   cursor: pointer;
-
-  border: 1px solid #ccc; /* серая рамка */
-  border-radius: 0; /* без скруглений */
+  border: 1px solid #ccc;
+  border-radius: 0;
   box-sizing: border-box;
-
+  padding: 10px 12px;
   transition: background 0.2s ease, color 0.2s ease, transform 0.1s ease;
 }
 
@@ -43,57 +42,69 @@
 .arrow {
   font-size: 0.7rem;
   transition: transform 0.25s ease;
-  pointer-events: none; /* чтобы не мешала кликам */
+  pointer-events: none;
+  color: #333;
 }
 
 .arrow.open {
   transform: rotate(180deg);
 }
 
-/* ===== ПОДМЕНЮ ===== */
+/* ===== ОБЩЕЕ ДЛЯ ВСЕХ ПОДМЕНЮ ===== */
 .submenu {
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
-
-  border-left: 2px solid #d30909; /* тонкий маркер слева */
-
-  /* убрано лишнее место */
+  border-left: 2px solid #d30909; /* красный маркер слева */
   padding-left: 0;
   margin-left: 0;
-
   overflow: hidden;
   max-height: 0;
   opacity: 0;
   pointer-events: none;
-
   transition: max-height 0.35s ease-out, opacity 0.3s ease;
 }
 
 .submenu.show {
-  max-height: 200px;
+  max-height: 1000px; /* большой запас, чтобы всё помещалось */
   opacity: 1;
   pointer-events: auto;
 }
 
-/* ===== КНОПКИ ПОДМЕНЮ ===== */
-.submenu button {
-  display: block;
+/* ===== КНОПКИ ВНУТРИ ПОДМЕНЮ ===== */
+.submenu button,
+.submenu .menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
   text-align: left;
-
-  padding: 8px 16px 8px 24px; /* текст чуть правее */
+  padding: 8px 16px 8px 24px;
   background: none;
   border: 1px solid #ccc;
   border-radius: 0;
-
   font-size: 14px;
   color: #000;
   cursor: pointer;
-
+  box-sizing: border-box;
   transition: background 0.2s ease, color 0.2s ease;
 }
 
-.submenu button:hover {
-  background-color: #f2f2f2;
+.submenu button:hover,
+.submenu .menu-btn:hover {
+  background-color: #f3f3f3;
+}
+
+/* ===== ВЛОЖЕННЫЙ УРОВЕНЬ (например, Цеха) ===== */
+.submenu .submenu {
+  border-left: 2px solid #d30909;
+  margin-left: 8px;
+  background-color: #ffffff;
+  transition: max-height 0.35s ease-out, opacity 0.3s ease;
+}
+
+.submenu .submenu.show {
+  max-height: 800px;
+  opacity: 1;
+  pointer-events: auto;
 }

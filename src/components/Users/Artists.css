@@ -1,0 +1,64 @@
+.artists-page {
+  padding: 20px;
+  background-color: #fafafa;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.artists-page h2 {
+  margin-bottom: 20px;
+  font-size: 20px;
+  color: #222;
+  text-transform: uppercase;
+  border-bottom: 2px solid #d30909;
+  padding-bottom: 6px;
+}
+
+/* сетка карточек */
+.artists-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+/* карточка артиста */
+.artist-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.artist-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.artist-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.artist-info {
+  padding: 12px;
+}
+
+.artist-info h3 {
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+.artist-info .role {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.artist-info .exp {
+  font-size: 13px;
+  color: #999;
+}

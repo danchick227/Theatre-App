@@ -5,8 +5,10 @@
   padding: 0;
   text-align: left;
 }
+
 .content {
-  margin-left: 220px; /* ← такая же ширина, как у sidebar */
+  padding-top: var(--header-height);
+  margin-left: var(--sidebar-width); /* ← такая же ширина, как у sidebar */
   padding: 24px;
   background: #f8f8f8;
   min-height: 100vh;
