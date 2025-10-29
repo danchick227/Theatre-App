@@ -17,7 +17,7 @@ export const artists = [
     id: 3,
     name: "Николай Орлов",
     role: "Комедийный актёр",
-    experience: "5 лет",
+    experience: "5  лет",
     image: "https://via.placeholder.com/150x150?text=НО",
   },
   {
