@@ -42,7 +42,7 @@ export default function Schedule() {
         color: "#d9c5f7",
       },
     ],
-    хз: [
+    "Доп. площадка": [
       { title: "Реп. Муха - Цокотуха", time: "15:00–18:00", color: "#b9ebe0" },
       {
         title: "Спящая царевна. Тех. репетиция",
