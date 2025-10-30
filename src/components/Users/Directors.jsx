@@ -1,4 +1,4 @@
-import "./Artists.css";
+﻿import "./Artists.css";
 import { directors } from "../../Data/directors.js";
 
 export default function Directors() {
@@ -6,13 +6,13 @@ export default function Directors() {
     <div className="artists-page">
       <h2>Режиссёры театра</h2> 
       <div className="artists-grid">
-        {artists.map((directors) => (
-          <div className="artist-card" key={directors.id}>
-            <img src={directors.image} alt={directors.name} />
+        {directors.map((director) => (
+          <div className="artist-card" key={director.id}>
+            <img src={director.image} alt={director.name} />
             <div className="artist-info">
-              <h3>{directors.name}</h3>
-              <p className="role">{directors.role}</p>
-              <p className="exp">Стаж: {directors.experience}</p>
+              <h3>{director.name}</h3>
+              <p className="role">{director.role}</p>
+              <p className="exp">стаж: {director.experience}</p>
             </div> 
           </div>
         ))}
@@ -20,3 +20,4 @@ export default function Directors() {
     </div>
   );
 }
+
