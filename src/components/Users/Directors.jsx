@@ -4,7 +4,7 @@ import { directors } from "../../Data/directors.js";
 export default function Directors() {
   return (
     <div className="artists-page">
-      <h2>Режисёры театра</h2>
+      <h2>Режиссёры театра</h2> 
       <div className="artists-grid">
         {artists.map((directors) => (
           <div className="artist-card" key={directors.id}>

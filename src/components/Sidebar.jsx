@@ -4,6 +4,7 @@ import "./Sidebar.css";
 export default function Sidebar({ setActivePage }) {
   const [openSchedule, setOpenSchedule] = useState(false);
   const [openUsers, setOpenUsers] = useState(false);
+
   const [openWorkshops, setOpenWorkshops] = useState(false);
 
   return (
@@ -35,7 +36,7 @@ export default function Sidebar({ setActivePage }) {
 
           <div className={`submenu ${openUsers ? "show" : ""}`}>
             <button onClick={() => setActivePage("artists")}>Артисты</button>
-            <button>Режиссёры</button>
+            <button onClick={() => setActivePage("directors")}>Режиссёры</button>
 
             {/* ====== Цеха ====== */}
             <div className="menu-item">
@@ -50,12 +51,12 @@ export default function Sidebar({ setActivePage }) {
               </button>
 
               <div className={`submenu ${openWorkshops ? "show" : ""}`}>
-                <button>Монтировщики</button>
-                <button>Звукари</button>
-                <button>Световики</button>
+                <button>Монтировочный цех</button>
+                <button>Звукорежиссёрский цех</button>
+                <button>Светооссветительный цех</button>
                 <button>Швейный цех</button>
-                <button>Художественный</button>
-                <button>Парикмахерский</button>
+                <button>Художественный цех</button>
+                <button>Парикмахерский цех</button>
               </div>
             </div>
           </div>

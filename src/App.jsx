@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar.jsx";
 import Schedule from "./components/Schedule.jsx";
 import AdminSchedule from "./components/AdminSchedule.jsx";
 import Artists from "./components/Users/Artists.jsx";
+import Directors from "./components/Users/Directors.jsx";// добавили режиссёров
 import LoginModal from "./components/LoginModal.jsx"; // ← добавили
 import "./App.css";
 
@@ -32,6 +33,7 @@ export default function App() {
           {activePage === "schedule" &&
             (isAdmin ? <AdminSchedule /> : <Schedule />)}
           {activePage === "artists" && <Artists />}
+          {activePage === "directors" && <Directors />}
         </main>
       </div>
 
