@@ -1,10 +1,12 @@
 const API_URL = "https://localhost:7078/api";
 
 export async function login(login, password) {
-  const response = await fetch(`${API_URL}/auth/login`, {
+  const response = await fetch(`${API_URL}/Auth/login`, {
     method: "POST",
+    mode: "cors",
     headers: {
       "Content-Type": "application/json",
+      accept: "*/*",
     },
     body: JSON.stringify({ login, password }),
   });
