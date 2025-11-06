@@ -51,7 +51,9 @@ export default function Sidebar({ setActivePage }) {
               </button>
 
               <div className={`submenu ${openWorkshops ? "show" : ""}`}>
-                <button>Монтировочный цех</button>
+                <button onClick={() => setActivePage("workers")}>
+                  Монтировочный цех
+                </button>
                 <button>Звукорежиссёрский цех</button>
                 <button>Светооссветительный цех</button>
                 <button>Швейный цех</button>
