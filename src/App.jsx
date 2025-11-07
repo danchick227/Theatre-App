@@ -14,8 +14,8 @@ export default function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false); // ← добавили
 
-  const handleLoginSuccess = () => {
-    setIsAdmin(true);
+  const handleLoginSuccess = (userData) => {
+    setIsAdmin(userData?.role === "admin");
     setIsLoginOpen(false);
   };
 
@@ -33,9 +33,9 @@ export default function App() {
         <main className="content">
           {activePage === "schedule" &&
             (isAdmin ? <AdminSchedule /> : <Schedule />)}
-          {activePage === "artists" && <Artists />}
-          {activePage === "directors" && <Directors />}
-          {activePage === "workers" && <Workers />}
+          {activePage === "artists" && <Artists isAdmin={isAdmin} />}
+          {activePage === "directors" && <Directors isAdmin={isAdmin} />}
+          {activePage === "workers" && <Workers isAdmin={isAdmin} />}
         </main>
       </div>
 

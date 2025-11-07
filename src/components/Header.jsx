@@ -16,7 +16,13 @@ export default function Header({ isAdmin, setIsAdmin, onOpenLogin }) {
               Войти как админ
             </button>
           ) : (
-            <button className="logout-btn" onClick={() => setIsAdmin(false)}>
+            <button
+              className="logout-btn"
+              onClick={() => {
+                localStorage.removeItem("token");
+                setIsAdmin(false);
+              }}
+            >
               Выйти
             </button>
           )}

@@ -1,0 +1,7 @@
+TODO (next phase):
+1. Generalize users management so Artists, Directors, Workers tabs fetch from backend via role-specific endpoints and expose the same admin CRUD UI.
+2. Define and document role taxonomy (e.g., admin, artist, director, worker, technical) and enforce it across backend + frontend.
+3. Restructure frontend folders (components/api/assets) and backend solution (Controllers/Services/DTOs) for clarity; remove leftover mock data.
+4. Extend EF Core model with image path per user, add server-side file storage (project-level folder) and serve static files; API should return relative paths.
+5. Update frontend to request and render uploaded photos, with fallbacks when missing.
+6. Add corresponding API methods for uploading/deleting images or referencing stored files, ensuring validation + error handling.

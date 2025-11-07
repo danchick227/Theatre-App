@@ -1,9 +1,16 @@
 const API_URL = "https://localhost:7078/api";
 
+async function handleJson(response, fallbackMessage) {
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || fallbackMessage);
+  }
+  return data;
+}
+
 export async function login(login, password) {
   const response = await fetch(`${API_URL}/Auth/login`, {
     method: "POST",
-    mode: "cors",
     headers: {
       "Content-Type": "application/json",
       accept: "*/*",
@@ -11,27 +18,30 @@ export async function login(login, password) {
     body: JSON.stringify({ login, password }),
   });
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Ошибка авторизации");
-  }
-
-  return data;
+  return handleJson(response, "Ошибка авторизации");
 }
 
-export async function register(login, password) {
-  const response = await fetch(`${API_URL}/auth/register`, {
+export async function register(credentials) {
+  const response = await fetch(`${API_URL}/Auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ login, password }),
+    body: JSON.stringify(credentials),
   });
 
-  const data = await response.json();
+  return handleJson(response, "Ошибка регистрации");
+}
 
-  if (!response.ok) {
-    throw new Error(data.message || "Ошибка регистрации");
-  }
+export async function getCurrentUser() {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
 
-  return data;
+  const response = await fetch(`${API_URL}/Auth/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      accept: "*/*",
+    },
+  });
+
+  return handleJson(response, "Ошибка получения данных пользователя");
 }

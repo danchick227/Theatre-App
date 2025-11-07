@@ -14,6 +14,95 @@
   padding-bottom: 6px;
 }
 
+.info-message,
+.error-message {
+  margin: 8px 0 16px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.info-message {
+  background: #eef5ff;
+  color: #0b4aa8;
+}
+
+.error-message {
+  background: #ffecec;
+  color: #b30000;
+}
+
+.artists-admin-panel {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-left: 4px solid #d30909;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.artists-admin-panel h3 {
+  margin: 0 0 16px;
+  font-size: 18px;
+  color: #111;
+}
+
+.artists-admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.artists-admin-form .form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.artists-admin-form input {
+  flex: 1 1 200px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #cfcfcf;
+  font-size: 0.95rem;
+}
+
+.artists-admin-form .file-row input[type="file"] {
+  flex: 1 1 200px;
+  padding: 8px 10px;
+  border: 1px dashed #cfcfcf;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.artists-admin-form button {
+  align-self: flex-start;
+  background: #d30909;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.artists-admin-form button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.artists-admin-form button:not(:disabled):hover {
+  background: #a80707;
+}
+
+.form-error {
+  margin: 0;
+  color: #b30000;
+  font-weight: 500;
+}
+
 /* сетка карточек */
 .artists-grid {
   display: grid;
@@ -35,6 +124,17 @@
 .artist-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Стили для карточки текущего пользователя */
+.artist-card.current-user {
+  border: 3px solid #d30909;
+  box-shadow: 0 0 15px rgba(211, 9, 9, 0.2);
+}
+
+.artist-card.current-user:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(211, 9, 9, 0.3);
 }
 
 .artist-card img {
@@ -61,4 +161,21 @@
 .artist-info .exp {
   font-size: 13px;
   color: #999;
+}
+
+.artist-card .delete-btn {
+  margin-top: 12px;
+  width: 100%;
+  background: #fff2f2;
+  color: #a80707;
+  border: 1px solid #f3c5c5;
+  border-radius: 6px;
+  padding: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.artist-card .delete-btn:hover {
+  background: #ffd6d6;
+  color: #820404;
 }

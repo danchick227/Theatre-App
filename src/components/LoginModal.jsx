@@ -7,12 +7,22 @@ export default function RegistrationModal({ onClose, onSuccess }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  function handleOverlayClick(event) {
+    // Закрываем модалку только при клике именно по фону, а не по контенту
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  }
+
   async function handleLogin(e) {
     e.preventDefault();
     setError("");
 
     try {
       const data = await login(loginInput, password); // ← просто вызываем функцию
+      if (data?.token) {
+        localStorage.setItem("token", data.token);
+      }
       onSuccess?.(data);
       onClose();
     } catch (err) {
@@ -21,7 +31,7 @@ export default function RegistrationModal({ onClose, onSuccess }) {
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={handleOverlayClick}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <h2>Вход</h2>
 
