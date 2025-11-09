@@ -1,16 +1,37 @@
-# React + Vite
+# Theatre App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Веб-приложение для управления расписанием театра и каталогом сотрудников (артисты, режиссёры, технические работники). Построено на React 19 + Vite.
 
-Currently, two official plugins are available:
+## Основные функции
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Публичное расписание.**  
+  Отображает события по сценам в разрезе месяца, недели и дня. Для каждого периода доступна навигация стрелками и инпутом даты/месяца.
 
-## React Compiler
+- **Админ-расписание.**  
+  Переключение в режим администратора (через модальное окно входа) открывает отдельный грид, где можно добавлять, редактировать и удалять карточки событий.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Каталог пользователей.**  
+  Вкладки «Артисты», «Режиссёры», «Цеха» используют единую сетку с данными, загружаемыми через `src/api/*`. В админ-режиме доступны CRUD-операции.
 
-## Expanding the ESLint configuration
+- **Навигация.**  
+  React Router 7 обеспечивает маршруты `/schedule/mouth`, `/schedule/week`, `/schedule/day`, а также страницы пользователей. Сайдбар разворачивает подменю для расписания и ролей.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Структура проекта
+
+- `src/components` — UI-компоненты (Schedule, AdminSchedule, Sidebar, Users и т.д.).
+- `src/api` — обёртки над HTTP-запросами к бекенду (artists, auth и пр.).
+- `database.md` — описание схемы БД для расписания и пользователей.
+- `docs/ROLES.md` — описание доступных ролей и прав.
+
+## Запуск и сборка
+
+```bash
+cp .env.example .env         # (опционально) задать VITE_API_BASE_URL
+npm install
+npm run dev                  # локальная разработка
+npm run build                # сборка production-бандла
+npm run preview              # предпросмотр собранного проекта
+```
+
+> По умолчанию фронт стучится к `https://localhost:7078/api`.  
+> При другом адресе бекенда задайте `VITE_API_BASE_URL` в `.env`.

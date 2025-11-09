@@ -5,45 +5,74 @@ import {
   formatDateKey,
   formatDisplayDate,
   formatWeekdayShort,
-  getMonthInputValue,
+  getDateInputValue,
   isSameDay,
-  parseMonthInputValue,
+  parseDateInputValue,
 } from "./scheduleData";
 import useScheduleData from "../hooks/useScheduleData";
 import ScheduleTabs from "./ScheduleTabs.jsx";
 import ScheduleAdminPanel from "./ScheduleAdminPanel.jsx";
 import { deleteScheduleEvent } from "../api/scheduleApi";
 
-export default function Schedule({ isAdmin = false, currentUser = null }) {
-  const [currentDate, setCurrentDate] = useState(new Date());
+const getStartOfWeek = (date) => {
+  const mondayBasedIndex = (date.getDay() + 6) % 7; // 0 = Monday
+  const start = new Date(date);
+  start.setDate(date.getDate() - mondayBasedIndex);
+  start.setHours(0, 0, 0, 0);
+  return start;
+};
+
+export default function ScheduleWeek({
+  isAdmin = false,
+  currentUser = null,
+}) {
+  const [weekStart, setWeekStart] = useState(getStartOfWeek(new Date()));
   const [refreshKey, setRefreshKey] = useState(0);
   const today = useMemo(() => new Date(), []);
 
-  const changeMonth = (offset) => {
-    setCurrentDate((prev) => {
+  const weekDays = useMemo(
+    () =>
+      Array.from({ length: 7 }, (_, index) => {
+        const date = new Date(weekStart);
+        date.setDate(weekStart.getDate() + index);
+        return date;
+      }),
+    [weekStart]
+  );
+
+  const changeWeek = (offset) => {
+    setWeekStart((prev) => {
       const next = new Date(prev);
-      next.setMonth(prev.getMonth() + offset);
-      return next;
+      next.setDate(prev.getDate() + offset * 7);
+      return getStartOfWeek(next);
     });
   };
 
-  const daysInMonth = useMemo(() => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const totalDays = new Date(year, month + 1, 0).getDate();
+  const getWeekLabel = () => {
+    const start = weekDays[0];
+    const end = weekDays[weekDays.length - 1];
+    const sameMonth = start.getMonth() === end.getMonth();
 
-    return Array.from({ length: totalDays }, (_, index) => ({
-      date: new Date(year, month, index + 1),
-      number: index + 1,
-    }));
-  }, [currentDate]);
+    if (sameMonth) {
+      return `${start.getDate()}–${end.getDate()} ${MONTH_NAMES[start.getMonth()]}`;
+    }
 
-  const isCurrentMonth =
-    today.getFullYear() === currentDate.getFullYear() &&
-    today.getMonth() === currentDate.getMonth();
+    return `${start.getDate()} ${MONTH_NAMES[start.getMonth()]} – ${end.getDate()} ${
+      MONTH_NAMES[end.getMonth()]
+    }`;
+  };
 
-  const rangeStart = formatDateKey(daysInMonth[0].date);
-  const rangeEnd = formatDateKey(daysInMonth[daysInMonth.length - 1].date);
+  const isCurrentWeek = weekDays.some((day) => isSameDay(day, today));
+
+  const handleWeekDateChange = (event) => {
+    const selectedDate = parseDateInputValue(event.target.value);
+    if (selectedDate) {
+      setWeekStart(getStartOfWeek(selectedDate));
+    }
+  };
+
+  const rangeStart = formatDateKey(weekDays[0]);
+  const rangeEnd = formatDateKey(weekDays[weekDays.length - 1]);
 
   const { stages, eventsByDate, isLoading, error } = useScheduleData({
     startDate: rangeStart,
@@ -61,13 +90,6 @@ export default function Schedule({ isAdmin = false, currentUser = null }) {
     return event.timeStart || event.timeEnd || "";
   };
 
-  const handleMonthInputChange = (event) => {
-    const nextDate = parseMonthInputValue(event.target.value);
-    if (nextDate) {
-      setCurrentDate(nextDate);
-    }
-  };
-
   const rangeLabel = `${formatDisplayDate(rangeStart)} – ${formatDisplayDate(
     rangeEnd
   )}`;
@@ -75,12 +97,9 @@ export default function Schedule({ isAdmin = false, currentUser = null }) {
   const triggerRefresh = () => setRefreshKey((prev) => prev + 1);
 
   const handleDeleteEvent = async (eventId) => {
-    if (
-      !window.confirm("Удалить это событие? Действие нельзя отменить.")
-    ) {
+    if (!window.confirm("Удалить это событие?")) {
       return;
     }
-
     try {
       await deleteScheduleEvent(eventId);
       triggerRefresh();
@@ -92,28 +111,27 @@ export default function Schedule({ isAdmin = false, currentUser = null }) {
   return (
     <div className="shedule">
       <ScheduleTabs />
-      {/* === Переключатель месяца === */}
       <div className="month-switcher">
-        <button className="nav-btn" onClick={() => changeMonth(-1)}>
+        <button className="nav-btn" onClick={() => changeWeek(-1)}>
           ‹
         </button>
         <div className="month-label day-label">
           <div className="day-heading">
-            <span className="day-weekday">Месяц</span>
+            <span className="day-weekday">Неделя</span>
             <span className="day-date">
-              {MONTH_NAMES[currentDate.getMonth()]} {currentDate.getFullYear()}
+              {getWeekLabel()} {weekStart.getFullYear()}
             </span>
             <span className="day-range">{rangeLabel}</span>
           </div>
-          {isCurrentMonth && <span className="today-badge">Сегодня</span>}
+          {isCurrentWeek && <span className="today-badge">Сегодня</span>}
           <input
-            type="month"
+            type="date"
             className="date-input"
-            value={getMonthInputValue(currentDate)}
-            onChange={handleMonthInputChange}
+            value={getDateInputValue(weekStart)}
+            onChange={handleWeekDateChange}
           />
         </div>
-        <button className="nav-btn" onClick={() => changeMonth(1)}>
+        <button className="nav-btn" onClick={() => changeWeek(1)}>
           ›
         </button>
       </div>
@@ -132,10 +150,10 @@ export default function Schedule({ isAdmin = false, currentUser = null }) {
           defaultDate={rangeStart}
           currentUser={currentUser}
           onCreated={triggerRefresh}
+          title="Управление неделей"
         />
       )}
 
-      {/* === Таблица с календарной сеткой === */}
       <table className="scene-table">
         <thead>
           <tr>
@@ -146,7 +164,7 @@ export default function Schedule({ isAdmin = false, currentUser = null }) {
           </tr>
         </thead>
         <tbody>
-          {daysInMonth.map(({ date, number }) => {
+          {weekDays.map((date) => {
             const dayKey = formatDateKey(date);
             const isToday = isSameDay(date, today);
 
@@ -154,10 +172,11 @@ export default function Schedule({ isAdmin = false, currentUser = null }) {
               <tr key={dayKey} className={isToday ? "today-row" : ""}>
                 <td className="date-cell">
                   <span className="date-weekday">{formatWeekdayShort(date)}</span>
-                  <span className="date-number">{number}</span>
+                  <span className="date-number">{date.getDate()}</span>
                 </td>
                 {stages.map((stage) => {
                   const events = getEvents(dayKey, stage.stageKey);
+
                   return (
                     <td key={`${stage.stageKey}-${dayKey}`}>
                       <div className="scene-column">

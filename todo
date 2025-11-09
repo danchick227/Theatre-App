@@ -5,3 +5,4 @@ TODO (next phase):
 4. Extend EF Core model with image path per user, add server-side file storage (project-level folder) and serve static files; API should return relative paths.
 5. Update frontend to request and render uploaded photos, with fallbacks when missing.
 6. Add corresponding API methods for uploading/deleting images or referencing stored files, ensuring validation + error handling.
+7. Replace the ad-hoc sidebar state with real React Router navigation: add `react-router-dom`, wrap the app in a layout route with `<Sidebar>` + `<Outlet>`, define routes for schedule (admin/user), artists, directors, and workers, and swap sidebar buttons for `NavLink`s so deep links and browser history work.

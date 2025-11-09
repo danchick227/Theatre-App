@@ -1,4 +1,4 @@
-const API_URL = "https://localhost:7078/api";
+import { buildApiUrl } from "./httpClient";
 
 async function handleJson(response, fallbackMessage) {
   const data = await response.json();
@@ -9,7 +9,7 @@ async function handleJson(response, fallbackMessage) {
 }
 
 export async function login(login, password) {
-  const response = await fetch(`${API_URL}/Auth/login`, {
+  const response = await fetch(buildApiUrl("/auth/login"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -22,7 +22,7 @@ export async function login(login, password) {
 }
 
 export async function register(credentials) {
-  const response = await fetch(`${API_URL}/Auth/register`, {
+  const response = await fetch(buildApiUrl("/auth/register"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(credentials),
@@ -35,7 +35,7 @@ export async function getCurrentUser() {
   const token = localStorage.getItem("token");
   if (!token) return null;
 
-  const response = await fetch(`${API_URL}/Auth/me`, {
+  const response = await fetch(buildApiUrl("/auth/me"), {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",

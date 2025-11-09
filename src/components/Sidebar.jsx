@@ -1,11 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import "./Sidebar.css";
 
-export default function Sidebar({ setActivePage }) {
+export default function Sidebar() {
   const [openSchedule, setOpenSchedule] = useState(false);
   const [openUsers, setOpenUsers] = useState(false);
-
   const [openWorkshops, setOpenWorkshops] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname.startsWith("/schedule")) {
+      setOpenSchedule(true);
+    }
+
+    if (
+      location.pathname.startsWith("/artists") ||
+      location.pathname.startsWith("/directors") ||
+      location.pathname.startsWith("/workers")
+    ) {
+      setOpenUsers(true);
+    }
+
+    if (location.pathname.startsWith("/workers")) {
+      setOpenWorkshops(true);
+    }
+  }, [location.pathname]);
+
+  const navLinkClass = ({ isActive }) =>
+    `submenu-link${isActive ? " active" : ""}`;
 
   return (
     <aside className="sidebar">
@@ -21,9 +43,15 @@ export default function Sidebar({ setActivePage }) {
           </button>
 
           <div className={`submenu ${openSchedule ? "show" : ""}`}>
-            <button onClick={() => setActivePage("schedule")}>Месяц</button>
-            <button>Неделя</button>
-            <button>День</button>
+            <NavLink to="/schedule/mouth" className={navLinkClass}>
+              Месяц
+            </NavLink>
+            <NavLink to="/schedule/week" className={navLinkClass}>
+              Неделя
+            </NavLink>
+            <NavLink to="/schedule/day" className={navLinkClass}>
+              День
+            </NavLink>
           </div>
         </div>
 
@@ -35,8 +63,12 @@ export default function Sidebar({ setActivePage }) {
           </button>
 
           <div className={`submenu ${openUsers ? "show" : ""}`}>
-            <button onClick={() => setActivePage("artists")}>Артисты</button>
-            <button onClick={() => setActivePage("directors")}>Режиссёры</button>
+            <NavLink to="/artists" className={navLinkClass}>
+              Артисты
+            </NavLink>
+            <NavLink to="/directors" className={navLinkClass}>
+              Режиссёры
+            </NavLink>
 
             {/* ====== Цеха ====== */}
             <div className="menu-item">
@@ -51,14 +83,14 @@ export default function Sidebar({ setActivePage }) {
               </button>
 
               <div className={`submenu ${openWorkshops ? "show" : ""}`}>
-                <button onClick={() => setActivePage("workers")}>
+                <NavLink to="/workers" className={navLinkClass}>
                   Монтировочный цех
-                </button>
-                <button>Звукорежиссёрский цех</button>
-                <button>Светооссветительный цех</button>
-                <button>Швейный цех</button>
-                <button>Художественный цех</button>
-                <button>Парикмахерский цех</button>
+                </NavLink>
+                <button disabled>Звукорежиссёрский цех</button>
+                <button disabled>Светооссветительный цех</button>
+                <button disabled>Швейный цех</button>
+                <button disabled>Художественный цех</button>
+                <button disabled>Парикмахерский цех</button>
               </div>
             </div>
           </div>

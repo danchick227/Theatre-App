@@ -73,7 +73,8 @@
 
 /* ===== КНОПКИ ВНУТРИ ПОДМЕНЮ ===== */
 .submenu button,
-.submenu .menu-btn {
+.submenu .menu-btn,
+.submenu a {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -88,11 +89,18 @@
   cursor: pointer;
   box-sizing: border-box;
   transition: background 0.2s ease, color 0.2s ease;
+  text-decoration: none;
 }
 
 .submenu button:hover,
-.submenu .menu-btn:hover {
+.submenu .menu-btn:hover,
+.submenu a:hover {
   background-color: #f3f3f3;
+}
+
+.submenu button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* ===== ВЛОЖЕННЫЙ УРОВЕНЬ (например, Цеха) ===== */
