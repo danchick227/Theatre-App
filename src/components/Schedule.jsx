@@ -126,7 +126,7 @@ export default function Schedule({ isAdmin = false, currentUser = null }) {
         <div className="schedule-alert">Нет данных о сценах</div>
       )}
 
-      {isAdmin && stages.length > 0 && (
+      {isAdmin && !error && stages.length > 0 && (
         <ScheduleAdminPanel
           stages={stages}
           defaultDate={rangeStart}
@@ -136,66 +136,68 @@ export default function Schedule({ isAdmin = false, currentUser = null }) {
       )}
 
       {/* === Таблица с календарной сеткой === */}
-      <table className="scene-table">
-        <thead>
-          <tr>
-            <th className="date-column">Дата</th>
-            {stages.map((stage) => (
-              <th key={stage.stageKey}>{stage.label}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {daysInMonth.map(({ date, number }) => {
-            const dayKey = formatDateKey(date);
-            const isToday = isSameDay(date, today);
+      {!error && (
+        <table className="scene-table">
+          <thead>
+            <tr>
+              <th className="date-column">Дата</th>
+              {stages.map((stage) => (
+                <th key={stage.stageKey}>{stage.label}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {daysInMonth.map(({ date, number }) => {
+              const dayKey = formatDateKey(date);
+              const isToday = isSameDay(date, today);
 
-            return (
-              <tr key={dayKey} className={isToday ? "today-row" : ""}>
-                <td className="date-cell">
-                  <span className="date-weekday">{formatWeekdayShort(date)}</span>
-                  <span className="date-number">{number}</span>
-                </td>
-                {stages.map((stage) => {
-                  const events = getEvents(dayKey, stage.stageKey);
-                  return (
-                    <td key={`${stage.stageKey}-${dayKey}`}>
-                      <div className="scene-column">
-                        {events.length === 0 ? (
-                          <div className="empty-slot">—</div>
-                        ) : (
-                          events.map((event) => (
-                            <div
-                              key={event.id}
-                              className="event"
-                              style={{ backgroundColor: event.color }}
-                            >
-                              {isAdmin && (
-                                <button
-                                  type="button"
-                                  className="event-delete-btn"
-                                  onClick={() => handleDeleteEvent(event.id)}
-                                  title="Удалить событие"
-                                >
-                                  ×
-                                </button>
-                              )}
-                              <div className="event-title">{event.title}</div>
-                              <div className="event-time">
-                                {renderEventTime(event)}
+              return (
+                <tr key={dayKey} className={isToday ? "today-row" : ""}>
+                  <td className="date-cell">
+                    <span className="date-weekday">{formatWeekdayShort(date)}</span>
+                    <span className="date-number">{number}</span>
+                  </td>
+                  {stages.map((stage) => {
+                    const events = getEvents(dayKey, stage.stageKey);
+                    return (
+                      <td key={`${stage.stageKey}-${dayKey}`}>
+                        <div className="scene-column">
+                          {events.length === 0 ? (
+                            <div className="empty-slot">—</div>
+                          ) : (
+                            events.map((event) => (
+                              <div
+                                key={event.id}
+                                className="event"
+                                style={{ backgroundColor: event.color }}
+                              >
+                                {isAdmin && (
+                                  <button
+                                    type="button"
+                                    className="event-delete-btn"
+                                    onClick={() => handleDeleteEvent(event.id)}
+                                    title="Удалить событие"
+                                  >
+                                    ×
+                                  </button>
+                                )}
+                                <div className="event-title">{event.title}</div>
+                                <div className="event-time">
+                                  {renderEventTime(event)}
+                                </div>
                               </div>
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                            ))
+                          )}
+                        </div>
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }

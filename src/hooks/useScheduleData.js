@@ -168,12 +168,14 @@ export default function useScheduleData({ startDate, endDate, refreshKey = 0 }) 
   const [stages, setStages] = useState([]);
   const [eventsByDate, setEventsByDate] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [stagesError, setStagesError] = useState(null);
+  const [eventsError, setEventsError] = useState(null);
 
   useEffect(() => {
     let ignore = false;
 
     const fetchStages = async () => {
+      setStagesError(null);
       try {
         const data = await getStages();
         if (ignore) return;
@@ -182,7 +184,9 @@ export default function useScheduleData({ startDate, endDate, refreshKey = 0 }) 
           : [];
         setStages(normalized);
       } catch (err) {
-        console.warn("Не удалось загрузить список сцен", err);
+        if (!ignore) {
+          setStagesError(err?.message || "Не удалось загрузить расписание");
+        }
       }
     };
 
@@ -198,7 +202,7 @@ export default function useScheduleData({ startDate, endDate, refreshKey = 0 }) 
 
     const fetchEvents = async () => {
       setIsLoading(true);
-      setError(null);
+      setEventsError(null);
       try {
         const data = await getScheduleEvents({ startDate, endDate });
         if (ignore) return;
@@ -207,7 +211,7 @@ export default function useScheduleData({ startDate, endDate, refreshKey = 0 }) 
         setStages((prev) => mergeStagesWithEvents(prev, normalized));
       } catch (err) {
         if (!ignore) {
-          setError(err.message || "Не удалось загрузить расписание");
+          setEventsError(err.message || "Не удалось загрузить расписание");
         }
       } finally {
         if (!ignore) {
@@ -222,5 +226,5 @@ export default function useScheduleData({ startDate, endDate, refreshKey = 0 }) 
     };
   }, [startDate, endDate, refreshKey]);
 
-  return { stages, eventsByDate, isLoading, error };
+  return { stages, eventsByDate, isLoading, error: stagesError || eventsError };
 }
