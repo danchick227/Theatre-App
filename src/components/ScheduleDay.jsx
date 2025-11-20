@@ -160,7 +160,7 @@ export default function ScheduleDay({
         <div className="schedule-alert">Нет данных о сценах</div>
       )}
 
-      {isAdmin && stages.length > 0 && (
+      {isAdmin && !error && stages.length > 0 && (
         <ScheduleAdminPanel
           stages={stages}
           defaultDate={dateKey}
@@ -176,41 +176,63 @@ export default function ScheduleDay({
           {stages.map((stage) => {
             const events = eventsByScene[stage.stageKey] ?? [];
 
-          return (
-            <div key={stage.stageKey} className="day-scene-card">
-              <div className="scene-name">{stage.label}</div>
-              {events.length === 0 ? (
-                <div className="empty-slot">Нет событий</div>
-              ) : (
-                events.map((event) => (
-                  <div
-                    key={event.id}
-                    className="event"
-                    style={{ backgroundColor: event.color }}
-                  >
-                    {isAdmin && (
-                      <button
-                        type="button"
-                        className="event-delete-btn"
-                        onClick={() => handleDeleteEvent(event.id)}
-                        title="Удалить событие"
-                      >
-                        ×
-                      </button>
-                    )}
-                    <div className="event-title">{event.title}</div>
-                    <div className="event-time">
-                      {event.timeStart && event.timeEnd
-                        ? `${event.timeStart}–${event.timeEnd}`
-                        : event.timeStart || event.timeEnd || ""}
+            return (
+              <div key={stage.stageKey} className="day-scene-card">
+                <div className="scene-name">{stage.label}</div>
+                {events.length === 0 ? (
+                  <div className="empty-slot">Нет событий</div>
+                ) : (
+                  events.map((event) => (
+                    <div
+                      key={event.id}
+                      className="event"
+                      style={{ backgroundColor: toEventBackground(event.color) }}
+                    >
+                      {isAdmin && (
+                        <button
+                          type="button"
+                          className="event-delete-btn"
+                          onClick={() => handleDeleteEvent(event.id)}
+                          title="Удалить событие"
+                        >
+                          ×
+                        </button>
+                      )}
+                      <div className="event-title">{event.title}</div>
+                      <div className="event-time">
+                        {event.timeStart && event.timeEnd
+                          ? `${event.timeStart}–${event.timeEnd}`
+                          : event.timeStart || event.timeEnd || ""}
+                      </div>
+                      {event.participants?.length > 0 && (
+                        <div className="event-participants">
+                          {event.participants.map((p) => (
+                            <span
+                              key={`${event.id}-${p.userLogin}-${p.responsibility}`}
+                            >
+                              {p.fullName || p.userLogin}{" "}
+                              {p.responsibility && `(${p.responsibility})`}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      {isAdmin && (
+                        <EventAssignControls
+                          eventId={event.id}
+                          users={allUsers}
+                          selectedLogin={selectedAssignees[event.id] || ""}
+                          onSelectChange={handleSelectAssignee}
+                          onAssign={handleAssignParticipant}
+                        />
+                      )}
                     </div>
-                  </div>
-                ))
-              )}
-            </div>
-          );
-        })}
-      </div>
+                  ))
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
