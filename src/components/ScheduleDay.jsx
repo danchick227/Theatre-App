@@ -160,7 +160,7 @@ export default function ScheduleDay({
         <div className="schedule-alert">Нет данных о сценах</div>
       )}
 
-      {isAdmin && (
+      {isAdmin && stages.length > 0 && (
         <ScheduleAdminPanel
           stages={stages}
           defaultDate={dateKey}
@@ -171,9 +171,10 @@ export default function ScheduleDay({
         />
       )}
 
-      <div className="day-grid">
-        {stages.map((stage) => {
-          const events = eventsByScene[stage.stageKey] ?? [];
+      {!error && (
+        <div className="day-grid">
+          {stages.map((stage) => {
+            const events = eventsByScene[stage.stageKey] ?? [];
 
           return (
             <div key={stage.stageKey} className="day-scene-card">
@@ -185,7 +186,7 @@ export default function ScheduleDay({
                   <div
                     key={event.id}
                     className="event"
-                    style={{ backgroundColor: toEventBackground(event.color) }}
+                    style={{ backgroundColor: event.color }}
                   >
                     {isAdmin && (
                       <button
@@ -203,27 +204,6 @@ export default function ScheduleDay({
                         ? `${event.timeStart}–${event.timeEnd}`
                         : event.timeStart || event.timeEnd || ""}
                     </div>
-                    {event.participants?.length > 0 && (
-                      <div className="event-participants">
-                        {event.participants.map((p) => (
-                          <span
-                            key={`${event.id}-${p.userLogin}-${p.responsibility}`}
-                          >
-                            {p.fullName || p.userLogin}{" "}
-                            {p.responsibility && `(${p.responsibility})`}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    {isAdmin && (
-                      <EventAssignControls
-                        eventId={event.id}
-                        users={allUsers}
-                        selectedLogin={selectedAssignees[event.id] || ""}
-                        onSelectChange={handleSelectAssignee}
-                        onAssign={handleAssignParticipant}
-                      />
-                    )}
                   </div>
                 ))
               )}

@@ -27,10 +27,7 @@ const getStartOfWeek = (date) => {
   return start;
 };
 
-export default function ScheduleWeek({
-  isAdmin = false,
-  currentUser = null,
-}) {
+export default function ScheduleWeek({ isAdmin = false, currentUser = null }) {
   const [weekStart, setWeekStart] = useState(getStartOfWeek(new Date()));
   const [refreshKey, setRefreshKey] = useState(0);
   const [showPersonal, setShowPersonal] = useState(false);
@@ -87,12 +84,14 @@ export default function ScheduleWeek({
     const sameMonth = start.getMonth() === end.getMonth();
 
     if (sameMonth) {
-      return `${start.getDate()}–${end.getDate()} ${MONTH_NAMES[start.getMonth()]}`;
+      return `${start.getDate()}–${end.getDate()} ${
+        MONTH_NAMES[start.getMonth()]
+      }`;
     }
 
-    return `${start.getDate()} ${MONTH_NAMES[start.getMonth()]} – ${end.getDate()} ${
-      MONTH_NAMES[end.getMonth()]
-    }`;
+    return `${start.getDate()} ${
+      MONTH_NAMES[start.getMonth()]
+    } – ${end.getDate()} ${MONTH_NAMES[end.getMonth()]}`;
   };
 
   const isCurrentWeek = weekDays.some((day) => isSameDay(day, today));
@@ -190,7 +189,9 @@ export default function ScheduleWeek({
             className="personal-toggle-btn"
             onClick={() => setShowPersonal((prev) => !prev)}
           >
-            {showPersonal ? "Показать все события" : "Показать личное расписание"}
+            {showPersonal
+              ? "Показать все события"
+              : "Показать личное расписание"}
           </button>
         </div>
       )}
@@ -203,7 +204,7 @@ export default function ScheduleWeek({
         <div className="schedule-alert">Нет данных о сценах</div>
       )}
 
-      {isAdmin && (
+      {isAdmin && stages.length > 0 && (
         <ScheduleAdminPanel
           stages={stages}
           defaultDate={rangeStart}
@@ -214,88 +215,69 @@ export default function ScheduleWeek({
         />
       )}
 
-      <div className="schedule-day-list">
-        {weekDays.map((date) => {
-          const dayKey = formatDateKey(date);
-          const isToday = isSameDay(date, today);
+      <table className="scene-table">
+        <thead>
+          <tr>
+            <th className="date-column">Дата</th>
+            {stages.map((stage) => (
+              <th key={stage.stageKey}>{stage.label}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {weekDays.map((date) => {
+            const dayKey = formatDateKey(date);
+            const isToday = isSameDay(date, today);
 
-          return (
-            <section
-              key={dayKey}
-              className={`schedule-day-section${isToday ? " is-today" : ""}`}
-            >
-              <div className="schedule-day-header">
-                <span className="date-chip">{formatWeekdayShort(date)}</span>
-                <span className="date-chip date-chip-number">
-                  {date.getDate()}
-                </span>
-                <span className="date-chip date-chip-month">
-                  {MONTH_NAMES[date.getMonth()].slice(0, 3)}
-                </span>
-              </div>
-
-              <div className="day-grid">
+            return (
+              <tr key={dayKey} className={isToday ? "today-row" : ""}>
+                <td className="date-cell">
+                  <span className="date-weekday">
+                    {formatWeekdayShort(date)}
+                  </span>
+                  <span className="date-number">{date.getDate()}</span>
+                </td>
                 {stages.map((stage) => {
                   const events = getEvents(dayKey, stage.stageKey);
 
                   return (
-                    <div key={`${stage.stageKey}-${dayKey}`} className="day-scene-card">
-                      <div className="scene-name">{stage.label}</div>
-                      {events.length === 0 ? (
-                        <div className="empty-slot">Нет событий</div>
-                      ) : (
-                        events.map((event) => (
-                          <div
-                            key={event.id}
-                            className="event"
-                            style={{ backgroundColor: toEventBackground(event.color) }}
-                          >
-                            {isAdmin && (
-                              <button
-                                type="button"
-                                className="event-delete-btn"
-                                onClick={() => handleDeleteEvent(event.id)}
-                                title="Удалить событие"
-                              >
-                                ×
-                              </button>
-                            )}
-                            <div className="event-title">{event.title}</div>
+                    <td key={`${stage.stageKey}-${dayKey}`}>
+                      <div className="scene-column">
+                        {events.length === 0 ? (
+                          <div className="empty-slot">—</div>
+                        ) : (
+                          events.map((event) => (
+                            <div
+                              key={event.id}
+                              className="event"
+                              style={{ backgroundColor: event.color }}
+                            >
+                              {isAdmin && (
+                                <button
+                                  type="button"
+                                  className="event-delete-btn"
+                                  onClick={() => handleDeleteEvent(event.id)}
+                                  title="Удалить событие"
+                                >
+                                  ×
+                                </button>
+                              )}
+                              <div className="event-title">{event.title}</div>
                               <div className="event-time">
                                 {renderEventTime(event)}
                               </div>
-                              {event.participants?.length > 0 && (
-                                <div className="event-participants">
-                                  {event.participants.map((p) => (
-                                    <span
-                                      key={`${event.id}-${p.userLogin}-${p.responsibility}`}
-                                    >
-                                      {p.fullName || p.userLogin}{" "}
-                                      {p.responsibility && `(${p.responsibility})`}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
-                              {isAdmin && (
-                                <EventAssignControls
-                                  eventId={event.id}
-                                  users={allUsers}
-                                  selectedLogin={selectedAssignees[event.id] || ""}
-                                  onSelectChange={handleSelectAssignee}
-                                  onAssign={handleAssignParticipant}
-                                />
-                              )}
                             </div>
                           ))
                         )}
-                    </div>
+                      </div>
+                    </td>
                   );
                 })}
-              </div>
-            </section>
-          );
-        })}
-      </div>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }
