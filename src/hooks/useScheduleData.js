@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getScheduleEvents, getStages } from "../api/scheduleApi";
-import { formatDateKey } from "../components/scheduleData";
+import { formatDateKey } from "../utils/scheduleUtils.js";
 
 let syntheticStageCounter = 0;
 
@@ -134,6 +134,13 @@ const buildEventsIndex = (events = []) => {
       timeStart: formatEventTime(timeStart),
       timeEnd: formatEventTime(timeEnd),
       color: event.colorHex ?? event.color_hex ?? event.color ?? undefined,
+      participants: Array.isArray(event.participants)
+        ? event.participants.map((p) => ({
+            userLogin: p.userLogin ?? p.login ?? p.user ?? "",
+            fullName: p.fullName ?? p.name ?? "",
+            responsibility: p.responsibility ?? "",
+          }))
+        : [],
       raw: event,
     });
   });
@@ -164,7 +171,7 @@ const mergeStagesWithEvents = (currentStages, events) => {
   return Array.from(stageMap.values());
 };
 
-export default function useScheduleData({ startDate, endDate, refreshKey = 0 }) {
+export default function useScheduleData({ startDate, endDate, refreshKey = 0, participantLogin }) {
   const [stages, setStages] = useState([]);
   const [eventsByDate, setEventsByDate] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -200,7 +207,7 @@ export default function useScheduleData({ startDate, endDate, refreshKey = 0 }) 
       setIsLoading(true);
       setError(null);
       try {
-        const data = await getScheduleEvents({ startDate, endDate });
+        const data = await getScheduleEvents({ startDate, endDate, participantLogin });
         if (ignore) return;
         const normalized = Array.isArray(data) ? data : [];
         setEventsByDate(buildEventsIndex(normalized));
@@ -220,7 +227,7 @@ export default function useScheduleData({ startDate, endDate, refreshKey = 0 }) 
     return () => {
       ignore = true;
     };
-  }, [startDate, endDate, refreshKey]);
+  }, [startDate, endDate, participantLogin, refreshKey]);
 
   return { stages, eventsByDate, isLoading, error };
 }

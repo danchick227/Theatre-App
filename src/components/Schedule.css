@@ -15,6 +15,16 @@
   padding: 20px;
   background-color: #f8f8f8;
   box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.shedule.admin-view {
+  background-color: #f4f6ff;
+}
+
+.shedule.user-view {
+  background-color: #f9f9f9;
 }
 
 /* ===== Переключатель месяца ===== */
@@ -23,6 +33,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  flex: 0 0 auto;
 
   width: 100%;
   max-width: 360px;
@@ -70,6 +81,61 @@
   gap: 8px;
   align-items: center;
   flex-wrap: wrap;
+  flex: 0 0 auto;
+}
+
+.schedule-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: -10px;
+}
+
+.personal-toggle-btn,
+.assign-btn {
+  border: 1px solid #dcdcdc;
+  background: #fff;
+  color: #333;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s ease, border 0.2s ease, color 0.2s ease;
+}
+
+.assign-btn {
+  margin-top: 8px;
+}
+
+.assign-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.assign-row select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 13px;
+}
+
+.personal-toggle-btn:hover,
+.assign-btn:hover {
+  background: #f3f3f3;
+  border-color: #c7c7c7;
+}
+
+.event-participants {
+  margin-top: 6px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: #333;
 }
 
 .schedule-tab {
@@ -254,6 +320,15 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  position: relative;
+}
+
+.day-badge-row {
+  width: 100%;
+  min-height: 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 
 .day-weekday {
@@ -272,7 +347,9 @@
 }
 
 .today-badge {
-  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: #d30909;
   color: #fff;
   border-radius: 999px;
@@ -281,6 +358,11 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  min-height: 18px;
+}
+
+.today-badge--placeholder {
+  visibility: hidden;
 }
 
 .day-grid {
@@ -289,6 +371,62 @@
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
   align-items: stretch;
+}
+
+.schedule-day-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.schedule-day-section {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.schedule-day-section.is-today {
+  border-color: #d30909;
+  box-shadow: 0 4px 12px rgba(211, 9, 9, 0.08);
+}
+
+.schedule-day-header {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.date-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background-color: #f3f3f3;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #555;
+  flex: 0 0 auto;
+}
+
+.date-chip-number {
+  font-weight: 700;
+  background-color: #e8e8e8;
+  color: #1c1c1c;
+}
+
+.date-chip-month {
+  background-color: #fff1dd;
+  color: #b01515;
 }
 
 .day-scene-card {
@@ -400,6 +538,10 @@
   gap: 10px;
 }
 
+.schedule-admin-form .form-row > * {
+  min-width: 0;
+}
+
 .schedule-admin-form textarea {
   width: 100%;
   padding: 8px 10px;
@@ -407,6 +549,7 @@
   border-radius: 6px;
   resize: vertical;
   font-family: inherit;
+  box-sizing: border-box;
 }
 
 .admin-panel-error {

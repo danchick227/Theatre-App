@@ -19,8 +19,16 @@ export default function App() {
 
   const handleLoginSuccess = (userData) => {
     setCurrentUser(userData || null);
-    setIsAdmin(userData?.role === "admin");
+    const nextIsAdmin =
+      typeof userData?.role === "string" &&
+      userData.role.toLowerCase() === "admin";
+    setIsAdmin(nextIsAdmin);
     setIsLoginOpen(false);
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setIsAdmin(false);
   };
 
   useEffect(() => {
@@ -34,7 +42,10 @@ export default function App() {
     getCurrentUser()
       .then((data) => {
         setCurrentUser(data);
-        setIsAdmin(data?.role === "admin");
+        const nextIsAdmin =
+          typeof data?.role === "string" &&
+          data.role.toLowerCase() === "admin";
+        setIsAdmin(nextIsAdmin);
       })
       .catch(() => {
         setCurrentUser(null);
@@ -46,7 +57,9 @@ export default function App() {
     <div className="app">
       <Header
         isAdmin={isAdmin}
+        currentUser={currentUser}
         setIsAdmin={setIsAdmin}
+        onLogout={handleLogout}
         onOpenLogin={() => setIsLoginOpen(true)} // ← передаём коллбэк
       />
 

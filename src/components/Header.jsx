@@ -1,7 +1,7 @@
 import "./Header.css";
 import whiteLogo from "../assets/whiteLogo.png";
 
-export default function Header({ isAdmin, setIsAdmin, onOpenLogin }) {
+export default function Header({ isAdmin, currentUser, setIsAdmin, onOpenLogin, onLogout }) {
   return (
     <header className="header">
       <div className="header-container">
@@ -11,21 +11,20 @@ export default function Header({ isAdmin, setIsAdmin, onOpenLogin }) {
         </div>
 
         <div className="header-actions">
-          {!isAdmin ? (
-            <button className="login-btn" onClick={onOpenLogin}>
-              Войти как админ
-            </button>
-          ) : (
-            <button
-              className="logout-btn"
-              onClick={() => {
+          <button
+            className="login-btn"
+            onClick={() => {
+              if (currentUser) {
                 localStorage.removeItem("token");
                 setIsAdmin(false);
-              }}
-            >
-              Выйти
-            </button>
-          )}
+                onLogout?.();
+              } else {
+                onOpenLogin();
+              }
+            }}
+          >
+            {currentUser ? "Выйти" : "Войти"}
+          </button>
         </div>
       </div>
     </header>

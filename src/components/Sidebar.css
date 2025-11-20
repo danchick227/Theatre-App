@@ -38,6 +38,11 @@
   transform: scale(0.98);
 }
 
+.menu-btn.active {
+  background-color: #f3f3f3;
+  font-weight: 600;
+}
+
 /* ===== СТРЕЛОЧКА ===== */
 .arrow {
   font-size: 0.7rem;
@@ -104,15 +109,4 @@
 }
 
 /* ===== ВЛОЖЕННЫЙ УРОВЕНЬ (например, Цеха) ===== */
-.submenu .submenu {
-  border-left: 2px solid #d30909;
-  margin-left: 8px;
-  background-color: #ffffff;
-  transition: max-height 0.35s ease-out, opacity 0.3s ease;
-}
-
-.submenu .submenu.show {
-  max-height: 800px;
-  opacity: 1;
-  pointer-events: auto;
-}
+/* Вложенных уровней больше нет, оставляем минимальный стиль */

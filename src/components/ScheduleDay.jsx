@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./Schedule.css";
 import {
   MONTH_NAMES,
@@ -8,11 +8,16 @@ import {
   getDateInputValue,
   isSameDay,
   parseDateInputValue,
-} from "./scheduleData";
+  resolveUserLogin,
+  toEventBackground,
+} from "../utils/scheduleUtils.js";
 import useScheduleData from "../hooks/useScheduleData";
 import ScheduleTabs from "./ScheduleTabs.jsx";
 import ScheduleAdminPanel from "./ScheduleAdminPanel.jsx";
-import { deleteScheduleEvent } from "../api/scheduleApi";
+import ScheduleDateSwitcher from "./ScheduleDateSwitcher.jsx";
+import { addEventParticipant, deleteScheduleEvent } from "../api/scheduleApi";
+import { getUsers } from "../api/usersApi";
+import EventAssignControls from "./EventAssignControls.jsx";
 
 export default function ScheduleDay({
   isAdmin = false,
@@ -20,7 +25,11 @@ export default function ScheduleDay({
 }) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [refreshKey, setRefreshKey] = useState(0);
+  const [showPersonal, setShowPersonal] = useState(false);
+  const [allUsers, setAllUsers] = useState([]);
+  const [selectedAssignees, setSelectedAssignees] = useState({});
   const today = useMemo(() => new Date(), []);
+  const userLogin = useMemo(() => resolveUserLogin(currentUser), [currentUser]);
 
   const changeDay = (offset) => {
     setCurrentDate((prev) => {
@@ -39,8 +48,33 @@ export default function ScheduleDay({
   const { stages, eventsByDate, isLoading, error } = useScheduleData({
     startDate: dateKey,
     endDate: dateKey,
+    participantLogin: showPersonal && userLogin ? userLogin : undefined,
     refreshKey,
   });
+
+  useEffect(() => {
+    let ignore = false;
+    if (!isAdmin) {
+      setAllUsers([]);
+      return undefined;
+    }
+    getUsers()
+      .then((list) => {
+        if (!ignore) setAllUsers(Array.isArray(list) ? list : []);
+      })
+      .catch(() => {
+        if (!ignore) setAllUsers([]);
+      });
+    return () => {
+      ignore = true;
+    };
+  }, [isAdmin]);
+
+  useEffect(() => {
+    if (isAdmin && showPersonal) {
+      setShowPersonal(false);
+    }
+  }, [isAdmin, showPersonal]);
 
   const eventsByScene = eventsByDate[dateKey] ?? {};
   const isToday = isSameDay(currentDate, today);
@@ -66,30 +100,57 @@ export default function ScheduleDay({
     }
   };
 
+  const handleSelectAssignee = (eventId, login) => {
+    setSelectedAssignees((prev) => ({ ...prev, [eventId]: login }));
+  };
+
+  const handleAssignParticipant = async (eventId) => {
+    if (!userLogin || !isAdmin) {
+      alert("Авторизуйтесь как администратор, чтобы назначать участников");
+      return;
+    }
+    const login = selectedAssignees[eventId];
+    if (!login) {
+      alert("Выберите пользователя");
+      return;
+    }
+    try {
+      await addEventParticipant({
+        eventId,
+        userLogin: login,
+        responsibility: "participant",
+      });
+      triggerRefresh();
+    } catch (err) {
+      alert(err.message || "Не удалось назначить участника");
+    }
+  };
+
   return (
-    <div className="shedule">
+    <div className={`shedule ${isAdmin ? "admin-view" : "user-view"}`}>
       <ScheduleTabs />
-      <div className="month-switcher">
-        <button className="nav-btn" onClick={() => changeDay(-1)}>
-          ‹
-        </button>
-        <div className="month-label day-label">
-          <div className="day-heading">
-            <span className="day-weekday">{formatWeekdayLong(currentDate)}</span>
-            <span className="day-date">{dayLabel}</span>
-          </div>
-          {isToday && <span className="today-badge">Сегодня</span>}
-          <input
-            type="date"
-            className="date-input"
-            value={getDateInputValue(currentDate)}
-            onChange={handleDayInputChange}
-          />
+      <ScheduleDateSwitcher
+        title={formatWeekdayLong(currentDate)}
+        subtitle={dayLabel}
+        isToday={isToday}
+        inputType="date"
+        inputValue={getDateInputValue(currentDate)}
+        onInputChange={handleDayInputChange}
+        onPrev={() => changeDay(-1)}
+        onNext={() => changeDay(1)}
+      />
+
+      {userLogin && !isAdmin && (
+        <div className="schedule-actions">
+          <button
+            type="button"
+            className="personal-toggle-btn"
+            onClick={() => setShowPersonal((prev) => !prev)}
+          >
+            {showPersonal ? "Показать все события" : "Показать личное расписание"}
+          </button>
         </div>
-        <button className="nav-btn" onClick={() => changeDay(1)}>
-          ›
-        </button>
-      </div>
+      )}
 
       {error && <div className="schedule-alert error">{error}</div>}
       {isLoading && !error && (
@@ -99,11 +160,12 @@ export default function ScheduleDay({
         <div className="schedule-alert">Нет данных о сценах</div>
       )}
 
-      {isAdmin && stages.length > 0 && (
+      {isAdmin && (
         <ScheduleAdminPanel
           stages={stages}
           defaultDate={dateKey}
           currentUser={currentUser}
+          isAdmin={isAdmin}
           onCreated={triggerRefresh}
           title={`События ${formatDisplayDate(dateKey)}`}
         />
@@ -123,7 +185,7 @@ export default function ScheduleDay({
                   <div
                     key={event.id}
                     className="event"
-                    style={{ backgroundColor: event.color }}
+                    style={{ backgroundColor: toEventBackground(event.color) }}
                   >
                     {isAdmin && (
                       <button
@@ -141,6 +203,27 @@ export default function ScheduleDay({
                         ? `${event.timeStart}–${event.timeEnd}`
                         : event.timeStart || event.timeEnd || ""}
                     </div>
+                    {event.participants?.length > 0 && (
+                      <div className="event-participants">
+                        {event.participants.map((p) => (
+                          <span
+                            key={`${event.id}-${p.userLogin}-${p.responsibility}`}
+                          >
+                            {p.fullName || p.userLogin}{" "}
+                            {p.responsibility && `(${p.responsibility})`}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    {isAdmin && (
+                      <EventAssignControls
+                        eventId={event.id}
+                        users={allUsers}
+                        selectedLogin={selectedAssignees[event.id] || ""}
+                        onSelectChange={handleSelectAssignee}
+                        onAssign={handleAssignParticipant}
+                      />
+                    )}
                   </div>
                 ))
               )}

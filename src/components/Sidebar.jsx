@@ -5,7 +5,6 @@ import "./Sidebar.css";
 export default function Sidebar() {
   const [openSchedule, setOpenSchedule] = useState(false);
   const [openUsers, setOpenUsers] = useState(false);
-  const [openWorkshops, setOpenWorkshops] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -19,10 +18,6 @@ export default function Sidebar() {
       location.pathname.startsWith("/workers")
     ) {
       setOpenUsers(true);
-    }
-
-    if (location.pathname.startsWith("/workers")) {
-      setOpenWorkshops(true);
     }
   }, [location.pathname]);
 
@@ -69,32 +64,12 @@ export default function Sidebar() {
             <NavLink to="/directors" className={navLinkClass}>
               Режиссёры
             </NavLink>
-
-            {/* ====== Цеха ====== */}
-            <div className="menu-item">
-              <button
-                className="menu-btn"
-                onClick={() => setOpenWorkshops(!openWorkshops)}
-              >
-                Цеха
-                <span className={`arrow ${openWorkshops ? "open" : ""}`}>
-                  ▼
-                </span>
-              </button>
-
-              <div className={`submenu ${openWorkshops ? "show" : ""}`}>
-                <NavLink to="/workers" className={navLinkClass}>
-                  Монтировочный цех
-                </NavLink>
-                <button disabled>Звукорежиссёрский цех</button>
-                <button disabled>Светооссветительный цех</button>
-                <button disabled>Швейный цех</button>
-                <button disabled>Художественный цех</button>
-                <button disabled>Парикмахерский цех</button>
-              </div>
-            </div>
+            <NavLink to="/workers" className={navLinkClass}>
+              Монтировочный цех
+            </NavLink>
           </div>
         </div>
+
       </nav>
     </aside>
   );
